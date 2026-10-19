@@ -2,8 +2,6 @@
 
 This is a minimal, local lab for practicing two reliability tasks: making and restoring consistent SQLite backups, and calculating a small service-level objective (SLO) report from request observations. It uses Python's standard library and has no user interface or external service dependency.
 
-This is an **initial, unvalidated version**. Its commands and the exercise below have not been run as part of delivery.
-
 ## Requirements
 
 - Python 3.9 or newer
@@ -45,7 +43,18 @@ Availability and latency answer different questions. Availability is the share o
 
 The included CSV is **synthetic sample data** for learning and demonstration. It is not production evidence.
 
-## Limits
+## Design decisions
+
+- **SQLite keeps recovery tangible.** A local database makes the backup and restore boundary explicit. This does not model a distributed database or cloud disaster recovery.
+- **Availability and latency are separate signals.** Failed requests count against availability; latency is calculated over successful requests. The report states this definition so readers can decide whether it fits their service.
+- **CSV input keeps telemetry ingestion separate.** The calculation can be reviewed independently of a monitoring vendor. Synthetic observations illustrate the format without implying production results.
+- **Restore to a new destination.** Refusing overwrites preserves the original for investigation and comparison.
+
+A production extension would need explicit RPO/RTO targets, encrypted off-site backups, retention, restoration checks, and repeated recovery exercises.
+
+## Status and limitations
+
+- Initial implementation; the commands and recovery exercise have not been run as part of delivery.
 
 - This lab copies one local SQLite database with SQLite's online backup API.
 - It does not schedule backups, encrypt files, upload data, manage retention, verify replicas, or coordinate distributed systems.
